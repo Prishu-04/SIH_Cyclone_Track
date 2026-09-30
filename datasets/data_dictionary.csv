@@ -1,0 +1,32 @@
+file,column,meaning
+india_cyclone_storm_summary_1982_2026.csv,storm_id,Unique storm identifier (year-serial)
+india_cyclone_storm_summary_1982_2026.csv,year,Year the storm formed
+india_cyclone_storm_summary_1982_2026.csv,serial,Storm's sequence number within that year
+india_cyclone_storm_summary_1982_2026.csv,name,Storm name (if named; NaN for unnamed depressions)
+india_cyclone_storm_summary_1982_2026.csv,basin,BOB = Bay of Bengal; ARB = Arabian Sea
+india_cyclone_storm_summary_1982_2026.csv,basin_label,Full-text version of basin
+india_cyclone_storm_summary_1982_2026.csv,start_time,First recorded fix timestamp (UTC)
+india_cyclone_storm_summary_1982_2026.csv,end_time,Last recorded fix timestamp (UTC)
+india_cyclone_storm_summary_1982_2026.csv,n_obs,Number of 3-hourly track fixes recorded for this storm
+india_cyclone_storm_summary_1982_2026.csv,max_wind,Peak 3-minute sustained wind speed (knots)
+india_cyclone_storm_summary_1982_2026.csv,min_pressure,Lowest central pressure recorded (hPa)
+india_cyclone_storm_summary_1982_2026.csv,peak_grade,IMD intensity code at peak (D/DD/CS/SCS/VSCS/ESCS/SuCS)
+india_cyclone_storm_summary_1982_2026.csv,peak_grade_label,Full-text version of peak_grade -- this is your CLASSIFICATION TARGET column
+india_cyclone_track_observations_1982_2026.csv,storm_id,Links to storm_summary.storm_id
+india_cyclone_track_observations_1982_2026.csv,time,Observation timestamp (UTC) -- usually every 3 hours
+india_cyclone_track_observations_1982_2026.csv,lat,Latitude of storm center (degrees N)
+india_cyclone_track_observations_1982_2026.csv,lon,Longitude of storm center (degrees E)
+india_cyclone_track_observations_1982_2026.csv,ci_no,Current Intensity number (Dvorak technique satellite-derived intensity index)
+india_cyclone_track_observations_1982_2026.csv,pressure,Central pressure at this fix (hPa)
+india_cyclone_track_observations_1982_2026.csv,wind,Sustained wind speed at this fix (knots) -- good PREDICTION target for regression
+india_cyclone_track_observations_1982_2026.csv,pressure_drop,Pressure drop from environment (hPa)
+india_cyclone_track_observations_1982_2026.csv,oci,Outermost closed isobar pressure (hPa)
+india_cyclone_track_observations_1982_2026.csv,oci_diameter,Diameter of outermost closed isobar (degrees)
+india_cyclone_track_observations_1982_2026.csv,grade,IMD intensity code at this specific fix (changes over the storm's lifetime)
+india_cyclone_track_observations_1982_2026.csv,grade_label,Full-text version of grade
+india_cyclone_track_observations_1982_2026.csv,step,0-based sequence index of this fix within the storm's life
+india_cyclone_track_observations_1982_2026.csv,pos_suspect,TRUE if this fix's position looks like a data-entry error (flagged, not removed)
+india_cyclone_track_observations_1982_2026.csv,date_suspect,TRUE if this fix's date looks transposed/erroneous (flagged, not removed)
+india_cyclone_remarks_1982_2026.csv,storm_id,Links to storm_summary.storm_id
+india_cyclone_remarks_1982_2026.csv,date,Date of the remark
+india_cyclone_remarks_1982_2026.csv,remark,Free-text IMD forecaster note (e.g. landfall location, weakening description) -- useful for NLP feature extraction

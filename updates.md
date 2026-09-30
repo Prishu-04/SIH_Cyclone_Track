@@ -1,0 +1,308 @@
+# Cyclone Region — Evolutionary Prototype Updates
+
+## 2026-09-22 — Chatbot fix, real physical basemap, live cyclone feed
+
+### Bug fixes
+- **Chatbot widget (and every other `position:fixed` element) was drifting away
+  on scroll, sitewide.** Root cause: the prior day's page-enter fade animation
+  on `<body>` animated `transform`, and `animation-fill-mode: both` left a
+  non-`none` transform on `<body>` after it finished — which makes `<body>` a
+  containing block for `position:fixed` descendants, so the chatbot launcher
+  (and the intro/loader overlays) ended up positioned relative to the full
+  scrollable page instead of the viewport. Fixed by dropping `transform` from
+  that animation entirely (`assets/theme.css`) — it's opacity-only now, with a
+  comment explaining why `transform` must never be animated on `<body>` again.
+- Removed two leftover "design reference" screenshots (`pic2.jpeg` with a
+  "Reference UI" caption on the Live Risk Map, and `evolution-timeline-reference.png`
+  under an actual `DESIGN REFERENCE · INTERACTIVE SECTION` badge on the
+  Evolutionary Track section) that were sitting directly above the real,
+  working interactive features they were mockups *for*. Removed both blocks
+  and their now-dead CSS.
+
+### Real physical basemap for the Evolutionary Track map
+- The Evolutionary Track map (`#evoMapSvg`) previously used a hand-drawn SVG
+  gradient approximation of India's terrain. Replaced it with a real image —
+  `assets/evo-physical-map.png`, fetched from Esri's public `World_Physical_Map`
+  export endpoint for the exact same 60–100°E / 0–35°N bounding box the SVG
+  viewBox already used (so it maps 1:1, no distortion). The India outline is
+  now a stroke-only brand accent over the real photo instead of a filled shape;
+  removed the now-redundant hand-drawn neighbor-landmass and state-line
+  decorations. All existing interactive logic (timeline scrubbing, track
+  plotting, tooltips) is untouched — it only depended on the coordinate
+  transform, not the background rendering.
+
+### Live cyclone data (real, not demo)
+- Added `GET /api/v1/cyclones/live` (`backend/app/main.py`) — proxies the
+  public GDACS (Global Disaster Alert and Coordination System) event API
+  server-side (it doesn't send CORS headers, so the browser can't call it
+  directly), filters to tropical-cyclone events in a bounding box around
+  India, and caches the result for 10 minutes. This is the one backend route
+  that calls a real external data source instead of returning demo fixtures —
+  when nothing is actually active, it reports zero rather than inventing a
+  storm.
+- Wired this into the Cyclone Tracking map on `cyclone_region.html`: a live
+  status badge next to the map title ("● N LIVE cyclones near India" / "●
+  No active cyclones near India right now"), plus a marker per tracked system
+  (pulsing red for currently active, muted grey for recently tracked but
+  inactive), each linking out to its GDACS report.
+
+### Files changed
+- `frontend/cyclone_region.html`, `frontend/assets/theme.css`
+- `frontend/assets/evo-physical-map.png` (new)
+- `backend/app/main.py`
+- `updates.md`
+
+## 2026-09-21 — Bug fixes, compliance & safety pass
+
+### Bug fixes
+- `frontend/cyclone_region.html` — the Evolutionary Track map's historical/forecast
+  track lines were silently invisible: the JS called `.setAttribute('d', ...)` on
+  `<g>` elements, which don't render a `d`-based shape. Changed `evoActualPath` and
+  `evoForecastPath` to `<path>` elements with proper stroke styling (white solid for
+  the actual track, orange dashed for the forecast, matching the existing legend).
+- `frontend/assets/missing-person.js` — the missing-person form's "Photo (optional)"
+  file input was never actually read or sent; the field did nothing. Wired it up
+  (client-side type/size validation → base64 → `photo` field), extended the backend's
+  `MissingPerson` model with a validated `photo` field, and added it to the responder
+  inbox view.
+- `ml/sample_data/sample/tracks/sample_storm_A.csv` — added; `ml/tests/test_data_loading.py`
+  referenced this fixture but it didn't exist, so 6 of 13 tests in that file failed on
+  collection. Verified the new fixture satisfies every assertion in that file directly
+  against `data.loader`/`data.validator` (column standardization, sort-by-timestamp,
+  missing-value detection, interpolate/drop strategies).
+
+### Compliance & safety
+- Added `frontend/privacy.html`, `frontend/terms.html`, `frontend/dmca.html` —
+  honest policies describing what the site actually collects/does, linked from every
+  page's footer.
+- Added `frontend/responder.html` + `GET /api/help-requests/inbox` and
+  `GET /api/v1/missing-persons` (backend) — a token-gated (`RESPONDER_ACCESS_TOKEN` /
+  `X-Responder-Token` header) view of submitted data. Previously this data could be
+  written but never read back by anyone.
+- Added a per-IP sliding-window rate limiter (`backend/app/main.py`) on `/api/chat`,
+  `/api/v1/risk/assess`, `/api/help-requests`, and `/api/v1/missing-persons`.
+- Hardened the image-upload validators (help-request + missing-person) to an
+  explicit JPEG/PNG/WEBP allowlist — SVG is now rejected (it can carry a `<script>`).
+- Added `.github/workflows/ci.yml` — ml tests, a backend import/health-check smoke
+  test, and a frontend JS syntax check, running on every push/PR to `main`.
+- Confirmed and explicitly did **not** action two items from an external checklist
+  that don't apply: Stripe/payment-processor review (no payment processing exists
+  anywhere in this project) and "content moderation via password validation" (no
+  signup/accounts exist to attach a password to, and password strength isn't a
+  content-moderation control regardless — addressed the actual gap instead: upload
+  format/size limits and the responder-gating above).
+- Corrected a suggestion from my own prior turn: `CSVs/cyclone_tracks_2000_2023.csv`
+  and its siblings at the repo root are **Atlantic-basin** storm-track data (e.g.
+  `AL072008`, longitudes ~-93°to -45°), used for the ML pipeline's methodology —
+  not Indian Ocean cyclones. Did not wire them into `history.html` (which documents
+  real Indian landfalls: Amphan, Fani, Hudhud...), since doing so would show
+  Atlantic hurricanes as if they were Indian events.
+
+### Files changed
+- `frontend/cyclone_region.html`, `frontend/assets/missing-person.js`,
+  `backend/app/main.py`, `backend/.env.example`
+- `frontend/privacy.html`, `frontend/terms.html`, `frontend/dmca.html`,
+  `frontend/responder.html` (new)
+- `frontend/index.html`, `about.html`, `history.html`, `report.html`,
+  `helplines.html`, `response-center.html`, `missing-person.html` (footer legal links)
+- `frontend/assets/theme.css` (`.footer-legal` styles)
+- `.github/workflows/ci.yml` (new)
+- `ml/sample_data/sample/tracks/sample_storm_A.csv` (new)
+- `README.md`, `updates.md`
+
+## 2026-08-30 — Frontend UI/UX, Emergency Help & Helplines
+
+### UI/UX improvements
+- Added a red **emergency alert bar** (with tap-to-call `112` and Request Help
+  links) to the top of every page: `index.html`, `cyclone_region.html`,
+  `history.html`, `about.html`, `report.html`, `helplines.html`.
+- Added five **quick-action emergency cards** on the homepage: Request Rescue,
+  Medical Help, Find Shelter, Report Damage, Emergency Helplines. They pre-fill
+  the help form (`report.html?type=…`).
+- Added a **Cyclone Helplines** section on the homepage (112 / 108 / 101 / 1078)
+  with tap-to-call `tel:` buttons.
+- Reworked the hero on `index.html` with a prominent **Submit Emergency
+  Request** action, and polished spacing, buttons, and typography.
+- Added lightweight **reveal-on-scroll** animations with `prefers-reduced-motion`
+  support.
+- Improved mobile behaviour: responsive grids and navigation (hamburger menu)
+  for desktop, tablet, and phone widths.
+- Added a **footer navigation** with direct links (Home, Live Tracking, History,
+  Request Help, Helplines, About) on all pages.
+
+### Emergency help form
+- New page `frontend/report.html` — **Report / Request Help** form with: Full
+  Name, Mobile, Email (optional), State, District, Village/City, Current
+  Location, People Affected, Children, Elderly/Disabled, multi-select Emergency
+  Type (Medical, Food, Water, Shelter, Rescue, Missing Person, Other),
+  Description, optional image upload (max 2MB), and a required **consent**
+  checkbox.
+- Prominent **SOS · Submit Emergency Request** button; all required fields are
+  validated client-side with clear error messages and ARIA live regions.
+- `frontend/assets/helpreport.js` — validates, submits to the backend, previews
+  the optional image, and, if the backend is unreachable (e.g. GitHub Pages),
+  stores the request in `localStorage` and shows an offline notice so data is
+  never silently lost.
+- `frontend/assets/emergency.css` — shared styling for the emergency bar, quick
+  actions, helpline cards, the help form, keyboard-focus outlines, and
+  responsive/reduced-motion rules.
+
+### Backend / API changes
+- `backend/app/main.py` — added `POST /api/help-requests` (validated Pydantic
+  model; mobile/email/type/image checks; consent enforcement; JSON-lines
+  persistence to `backend/data/help_requests.jsonl`) returning a reference id.
+- Added `GET /api/help-requests` returning only aggregate counts — personal data
+  is never exposed publicly.
+- `.gitignore` now excludes `backend/data/` so submitted personal data is never
+  committed; `backend/.env.example` documents the optional `HELP_REQUESTS_FILE`.
+
+### Helplines page
+- New page `frontend/helplines.html` — clearly labelled national emergency
+  numbers (112 Emergency, 108 Ambulance, 101 Fire & Rescue, 1078 Disaster
+  Helpline) as tap-to-call cards, plus an extended disaster-response table and a
+  disclaimer asking users to verify local/state numbers and follow official
+  IMD/NDMA advisories.
+
+### Accessibility improvements
+- Proper `<label>` associations, `aria-required`, `role="alert"/status` live
+  regions, a skip-to-content link, visible `:focus-visible` outlines, good
+  contrast, and a responsive keyboard-navigable form.
+
+### Testing performed
+- JavaScript syntax checked with Node for `helpreport.js` and the inline reveal
+  script.
+- Backend module imported and endpoint logic exercised with a local Python test
+  (valid submission writes JSON-lines; invalid payloads are rejected).
+- Verified every HTML page opens, the revised nav links resolve to existing
+  files, the cyclone prediction (`cyclone_region.html#evolution`), regional
+  map, history timeline, about page, and chatbot script remain intact.
+- Confirmed the grid layouts collapse correctly for tablet/mobile widths and
+  that the GitHub Pages workflow (static `frontend/` deploy) is unaffected.
+
+### Files changed
+- `frontend/index.html`, `frontend/history.html`, `frontend/about.html`,
+  `frontend/cyclone_region.html`
+- `frontend/report.html` (new), `frontend/helplines.html` (new)
+- `frontend/assets/emergency.css` (new), `frontend/assets/helpreport.js` (new)
+- `backend/app/main.py`, `backend/README.md`, `backend/.env.example`
+- `.gitignore`, `README.md`, `updates.md`
+## 2026-08-29
+
+### Implemented
+- Upgraded `frontend/cyclone_region.html` with an interactive **Cyclone Evolution Timeline**.
+- Added predefined observations for:
+  - 2008-08-25 00:00
+  - 2008-08-25 06:00
+  - 2008-08-25 12:00
+  - 2008-08-25 18:00
+  - 2008-08-26 00:00
+  - 2008-08-26 06:00
+  - 2008-08-26 12:00
+  - 2008-08-26 18:00
+  - 2008-08-27 00:00
+  - 2008-08-27 06:00
+  - 2008-08-27 12:00
+- Added selectable timeline with previous/current/next observation context.
+- Added `PLAY EVOLUTION`, `PAUSE`, and `RESET` controls.
+- Added dynamic current cyclone state cards for storm name, ID, time, location, classification, wind, pressure, movement, distance, and recent changes.
+- Added dynamic evolution-stage calculation: formation/depression, tropical storm, rapid intensification, peak intensity, and weakening.
+- Added an India / northern Indian Ocean regional demonstration map with:
+  - historical track
+  - current animated intensity marker
+  - deterministic +6h/+12h/+24h/+48h demo prediction track
+  - hover tooltips for historical points
+  - regional labels and coordinate grid
+- Added deterministic demo environmental conditions for:
+  - sea-surface temperature
+  - atmospheric moisture
+  - vertical wind shear
+  - pressure trend
+  - wind trend
+  - upper-level outflow
+  - ocean heat content
+  - Coriolis support
+- Added a prototype **Cyclone Development Favorability Score / 100** with progress bars and explicit heuristic disclaimer.
+- Added deterministic demo prediction cards for +6h, +12h, +24h, and +48h.
+- Added deterministic **Demo Confidence** indicator based on observation history and trend consistency.
+- Added a dynamic **Why This Prediction?** explanation that changes with the selected observation.
+- Added lightweight inline SVG wind-speed and central-pressure evolution charts; no new dependency was introduced.
+- Preserved the existing header, navigation, region filter, original map, risk profile, methodology section, footer, and chatbot.
+- Added responsive styling for desktop, tablet, and mobile layouts.
+- Added explicit scientific/product disclaimer:
+  - `EVOLUTIONARY PROTOTYPE — DEMO DATA & HEURISTIC PREDICTION`
+  - Prototype is not an operational weather forecast.
+
+### Important data note
+The supplied feature dataset contains GUSTAV (`AL072008`) in the **Atlantic basin**, so its real longitudes are west of the India-focused 60°E–100°E map. To keep the requested India regional visualization geographically bounded, the prototype retains the supplied GUSTAV wind/pressure/change evolution while using deterministic **regional demonstration coordinates** for the interactive India map. The UI does not claim those regional coordinates are Gustav's real historical track.
+
+### Files changed
+- `frontend/cyclone_region.html`
+- `updates.md`
+
+### Dependencies
+- No new JavaScript package or external weather API was added.
+- Existing project structure and navigation were preserved.
+
+### Validation performed
+- Confirmed the upgraded HTML file was written successfully.
+- Confirmed the prototype data and controls are embedded in the page.
+- Confirmed the project archive can be repackaged with the new page and `updates.md`.
+
+## 2026-08-29 — Map & User Input Upgrade
+
+### Implemented from latest UI review
+- Reworked the evolutionary map to use a cleaner **geographic India / northern Indian Ocean projection** with a proper 60°E–100°E and 0°N–35°N coordinate frame.
+- Replaced the previous oversized/distorted India silhouette with a more proportionally aligned India outline for the requested regional view.
+- Added clearer neighbouring geography/context labels for Pakistan, Bangladesh, Myanmar and Sri Lanka, plus Arabian Sea and Bay of Bengal labels.
+- Added subtle geographic grid lines and state/region guide lines without overwhelming the cyclone track.
+- Kept the historical track, current cyclone marker, forecast track and hover tooltips synchronized with the geographic coordinates.
+- Added a **User Controlled Demo Scenario** panel so the values are no longer UI-hardcoded only.
+- Added editable inputs for:
+  - Storm Name
+  - Storm ID
+  - Date / Time (UTC)
+  - Latitude
+  - Longitude
+  - Wind Speed
+  - Central Pressure
+  - Movement Speed
+  - Movement Direction
+  - Wind Change / 6h
+  - Pressure Change / 6h
+  - Sea Surface Temperature
+  - Atmospheric Moisture
+  - Vertical Wind Shear
+  - Upper-Level Outflow
+  - Ocean Heat Content
+- Added `APPLY TO CURRENT` to update the selected observation immediately.
+- Added `ADD AS NEW OBSERVATION` to create a new user-defined timeline point and automatically reorder the timeline chronologically.
+- Added `RESTORE SAMPLE VALUES` to return to the original GUSTAV demo sequence.
+- User-entered values now drive the cyclone state, evolution stage, environmental factor panel, favorability score, demo prediction, prediction explanation, map marker/track and charts.
+- Added input validation for the core numeric/time fields.
+- Existing sample data, PLAY/PAUSE/RESET controls and navigation remain intact.
+
+### Validation
+- JavaScript syntax checked successfully with Node.js.
+- Confirmed all new input element IDs are unique.
+- Confirmed the evolutionary script initializes the form from the selected observation.
+- Confirmed the page remains frontend-only and does not require backend inference or a live weather API.
+
+## 2026-08-29 — Evolution Map & Visual Reference Update
+- Added the supplied Cyclone Evolution Timeline visual as `frontend/assets/evolution-timeline-reference.png` and displayed it at the top of the Evolutionary Prototype section.
+- Preserved the supplied original screenshot as `frontend/assets/evolution-reference-original.png` for project reference.
+- Added `frontend/assets/evolution-map-reference.png` from the supplied map screenshot as a reference asset.
+- Reworked the evolutionary India map outline and regional context so the peninsula, northeast, neighbouring landmasses, Sri Lanka and surrounding seas are visually clearer while retaining the existing geographic projection and interactive cyclone layers.
+- Kept the map data-driven: timeline, current marker, historical track and demo prediction continue to update from the selected/user-entered observation.
+
+## Response Center Upgrade — 2026-08-30
+
+Implemented a unified disaster-response layer across the existing CycloTrack India project:
+- Added `frontend/response-center.html` with SOS, live impact map, shelter finder, personalized prototype risk assessment, hazard forecast cards, data-provider status, alerts/notification controls, multilingual CycloBot selector, and missing-person entry point.
+- Added `frontend/missing-person.html` and `frontend/assets/missing-person.js`.
+- Added `frontend/assets/response-center.css` and `response-center.js`.
+- Extended the existing SOS form with optional GPS latitude/longitude capture and a Transportation Required emergency category.
+- Extended FastAPI with provider-ready `/api/v1/` endpoints for shelters, risk assessment, missing-person reports, alerts, data-source status, landfall, storm surge, and flood/rainfall risk.
+- Added clearly labelled demo data and official-warning disclaimers.
+- Added Response Center navigation links to existing pages.
+- Preserved the existing frontend, CycloBot, prediction/history/report functionality and existing SOS offline fallback.
+- Backend syntax and new JavaScript syntax were checked successfully.

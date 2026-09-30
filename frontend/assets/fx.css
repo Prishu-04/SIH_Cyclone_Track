@@ -1,0 +1,86 @@
+/* ===========================================================================
+   CycloTrack India — site intro (preloader) + global action-loading indicator
+   Paired with assets/fx.js. Loaded last in <head>, after page/theme styles.
+   ========================================================================= */
+
+/* ---------- Intro / preloader ---------- */
+html.cy-intro-lock, html.cy-intro-lock body { overflow: hidden; height: 100%; }
+
+#cyIntro {
+    position: fixed; inset: 0; z-index: 99999;
+    display: flex; align-items: center; justify-content: center; flex-direction: column;
+    background: radial-gradient(60% 60% at 50% 38%, #112444 0%, #070f1e 72%);
+    transition: opacity .6s ease, visibility .6s ease;
+}
+#cyIntro.cy-intro-out { opacity: 0; visibility: hidden; pointer-events: none; }
+
+#cyIntro .cy-intro-mark { width: 84px; height: 84px; margin-bottom: 20px; }
+#cyIntro .cy-intro-mark svg { width: 100%; height: 100%; display: block; }
+#cyIntro .cy-intro-ring { fill: none; stroke: rgba(244, 123, 32, .22); stroke-width: 2; }
+#cyIntro .cy-intro-swirl {
+    fill: none; stroke: #F47B20; stroke-width: 3; stroke-linecap: round;
+    transform-origin: 42px 42px; animation: cy-spin 1.7s linear infinite;
+}
+#cyIntro .cy-intro-dot { fill: #fff; }
+
+#cyIntro .cy-intro-word {
+    font-family: var(--font-head, 'Instrument Sans', system-ui, sans-serif);
+    font-weight: 700; font-size: 27px; letter-spacing: -.02em; color: #fff;
+    opacity: 0; transform: translateY(8px); animation: cy-rise .6s ease .22s forwards;
+}
+#cyIntro .cy-intro-word span { color: #F47B20; }
+#cyIntro .cy-intro-tag {
+    margin-top: 8px; font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: rgba(255, 255, 255, .5);
+    opacity: 0; transform: translateY(6px); animation: cy-rise .6s ease .42s forwards;
+}
+#cyIntro .cy-intro-bar {
+    margin-top: 24px; width: 160px; height: 2px; background: rgba(255, 255, 255, .12);
+    overflow: hidden; border-radius: 2px;
+}
+#cyIntro .cy-intro-bar span { display: block; height: 100%; width: 34%; background: #F47B20; animation: cy-sweep 1.05s ease-in-out infinite; }
+
+@keyframes cy-spin { to { transform: rotate(360deg); } }
+@keyframes cy-rise { to { opacity: 1; transform: translateY(0); } }
+@keyframes cy-sweep { 0% { transform: translateX(-120%); } 100% { transform: translateX(340%); } }
+
+@media (prefers-reduced-motion: reduce) {
+    #cyIntro .cy-intro-swirl { animation: none; }
+    #cyIntro .cy-intro-bar span { animation: none; width: 100%; }
+    #cyIntro .cy-intro-word, #cyIntro .cy-intro-tag { animation: none; opacity: 1; transform: none; }
+}
+
+/* ---------- Global "high-level action" loading indicator ---------- */
+#cyLoadBar {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%; z-index: 99998;
+    background: linear-gradient(90deg, #F47B20, #ffb066);
+    box-shadow: 0 0 10px rgba(244, 123, 32, .55);
+    transition: width .35s ease, opacity .3s ease; opacity: 0; pointer-events: none;
+}
+#cyLoadBar.cy-active { opacity: 1; }
+
+#cyLoadToast {
+    position: fixed; left: 50%; bottom: 22px; transform: translate(-50%, 12px); z-index: 99998;
+    background: rgba(7, 15, 30, .92); color: #fff; border: 1px solid rgba(255, 255, 255, .14);
+    border-radius: 999px; padding: 9px 16px 9px 12px;
+    font-family: var(--font-body, inherit); font-size: 13px; font-weight: 500;
+    display: flex; align-items: center; gap: 9px;
+    opacity: 0; visibility: hidden; transition: opacity .25s ease, transform .25s ease, visibility .25s ease;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .28);
+}
+#cyLoadToast.cy-active { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+#cyLoadToast .cy-spin {
+    width: 13px; height: 13px; border-radius: 50%; flex: none;
+    border: 2px solid rgba(255, 255, 255, .25); border-top-color: #F47B20;
+    animation: cy-spin .7s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) { #cyLoadToast .cy-spin { animation: none; } }
+
+/* Per-button busy state: CycloLoader.button(el, promise) */
+.cy-btn-busy { position: relative; pointer-events: none; opacity: .78; padding-right: 36px !important; }
+.cy-btn-busy::after {
+    content: ''; position: absolute; right: 13px; top: 50%; width: 14px; height: 14px; margin-top: -7px;
+    border-radius: 50%; border: 2px solid rgba(255, 255, 255, .35); border-top-color: #fff;
+    animation: cy-spin .7s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) { .cy-btn-busy::after { animation: none; } }

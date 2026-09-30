@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DMCA / Copyright Policy — CycloTrack India</title>
+    <meta name="description" content="How to report copyright infringement on CycloTrack India, and what file uploads are allowed.">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/chatbot.css">
+    <link rel="stylesheet" href="assets/emergency.css">
+    <link rel="stylesheet" href="assets/fx.css">
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --navy: #0B1E3A; --navy-dark: #070F1E; --orange: #F47B20; --orange-dark: #D9660E;
+            --white: #FFFFFF; --off-white: #F4F6F8; --text-body: #2D3E50;
+            --font-head: 'Instrument Sans', sans-serif; --font-body: 'Instrument Sans', sans-serif;
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--font-body); color: var(--text-body); background: var(--white); line-height: 1.6; font-size: 16px; }
+        header { background: var(--navy-dark); padding: 0 5%; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; border-bottom: 2px solid var(--orange); }
+        .logo { font-family: var(--font-head); font-weight: 800; font-size: 22px; color: var(--white); letter-spacing: .5px; text-decoration: none; }
+        .logo span { color: var(--orange); }
+        nav { display: flex; gap: 22px; align-items: center; }
+        nav a { font-family: var(--font-head); font-size: 15px; font-weight: 600; letter-spacing: .5px; color: rgba(255,255,255,.72); text-decoration: none; text-transform: uppercase; position: relative; padding: 6px 2px 8px; white-space: nowrap; transition: color .25s ease; }
+        nav a::after { content: ''; position: absolute; left: 50%; right: 50%; bottom: 0; height: 2px; background: var(--orange); transition: left .25s ease, right .25s ease; }
+        nav a:hover, nav a.active { color: var(--orange); }
+        nav a:hover::after, nav a.active::after { left: 0; right: 0; }
+        .header-cta { background: var(--orange); color: var(--white); font-family: var(--font-head); font-weight: 700; font-size: 14px; letter-spacing: .8px; text-transform: uppercase; padding: 9px 20px; text-decoration: none; }
+        .header-cta:hover { background: var(--orange-dark); }
+        .header-right { display: flex; align-items: center; gap: 18px; }
+        @media (min-width: 1025px) and (max-width: 1180px) { nav.main-nav { gap: 15px; } nav.main-nav a { font-size: 14px; } }
+        section { padding: 62px 5%; }
+        .section-inner { max-width: 820px; margin: 0 auto; }
+        .page-hero { background: var(--navy-dark); padding: 46px 5%; position: relative; overflow: hidden; }
+        .page-hero::before { content: ''; position: absolute; top: 0; right: 0; width: 40%; height: 100%; background: linear-gradient(120deg, transparent, rgba(244,123,32,.14)); }
+        .page-hero-inner { position: relative; z-index: 2; max-width: 820px; margin: 0 auto; }
+        .breadcrumb { font-family: var(--font-head); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.45); margin-bottom: 10px; }
+        .page-hero-h1 { font-family: var(--font-head); font-weight: 800; font-size: clamp(30px, 4.6vw, 46px); color: var(--white); text-transform: uppercase; line-height: .98; margin-bottom: 10px; }
+        .page-hero-h1 em { color: var(--orange); font-style: normal; }
+        .page-hero-sub { font-size: 14.5px; color: rgba(255,255,255,.55); max-width: 620px; }
+        .form-page-bg { background: var(--off-white); min-height: 40vh; }
+        .hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 32px; height: 32px; background: transparent; border: none; cursor: pointer; padding: 0; }
+        .hamburger span { display: block; width: 22px; height: 2px; background: var(--white); transition: .2s; }
+        .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+        .mobile-menu { position: fixed; top: 64px; left: 0; right: 0; background: var(--navy-dark); border-bottom: 2px solid var(--orange); z-index: 99; max-height: 0; overflow: hidden; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: max-height .32s ease, opacity .28s ease, transform .28s ease, visibility .28s; }
+        .mobile-menu.open { max-height: 560px; opacity: 1; visibility: visible; transform: translateY(0); }
+        .mobile-menu a { font-family: var(--font-head); font-size: 16px; font-weight: 600; letter-spacing: .5px; color: rgba(255,255,255,.78); text-decoration: none; text-transform: uppercase; padding: 16px 5%; border-bottom: 1px solid rgba(255,255,255,.08); display: block; }
+        .mobile-menu a.active { color: var(--orange); }
+        @media (max-width: 1024px) { nav.main-nav { display: none; } .header-cta { display: none; } .hamburger { display: flex; } }
+        @media (min-width: 1025px) { nav.main-nav { display: flex; } .hamburger { display: none; } .mobile-menu { display: none; } }
+        footer { background: var(--navy-dark); padding: 36px 5%; border-top: 2px solid var(--orange); }
+        .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        .footer-logo { font-family: var(--font-head); font-size: 19px; font-weight: 800; color: var(--white); }
+        .footer-logo span { color: var(--orange); }
+        .footer-copy { font-size: 12px; color: rgba(255,255,255,.3); }
+        .footer-nav { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+        .footer-nav a { color: rgba(255,255,255,.6); text-decoration: none; font-size: 13px; text-transform: uppercase; font-family: var(--font-head); letter-spacing: .5px; }
+        .footer-nav a:hover { color: var(--orange); }
+
+        .legal h2 { font-family: var(--font-head); font-size: 20px; font-weight: 700; color: var(--navy); margin: 34px 0 10px; }
+        .legal h2:first-child { margin-top: 0; }
+        .legal h3 { font-family: var(--font-head); font-size: 15px; font-weight: 700; color: var(--navy); margin: 20px 0 6px; }
+        .legal p { margin-bottom: 12px; color: #45566A; font-size: 15px; }
+        .legal ul { margin: 0 0 12px 20px; color: #45566A; font-size: 15px; }
+        .legal li { margin-bottom: 6px; }
+        .legal a { color: var(--orange-dark); }
+        .legal-meta { font-family: var(--font-mono, monospace); font-size: 12px; color: #8FA1B0; margin-bottom: 28px; }
+        .legal-callout { background: #FFF4E9; border-left: 3px solid var(--orange); padding: 14px 16px; margin: 20px 0; font-size: 14.5px; color: #6B4A1E; }
+        .legal-callout strong { color: var(--orange-dark); }
+        .legal-box { background: var(--off-white); border: 1px solid #E3E9EE; border-radius: 8px; padding: 16px 18px; margin: 16px 0; }
+        .legal-box code { font-family: var(--font-mono, monospace); font-size: 13px; background: #E9EEF2; padding: 1px 5px; border-radius: 3px; }
+    </style>
+    <link rel="stylesheet" href="assets/theme.css">
+</head>
+<body id="top">
+<script src="assets/fx.js"></script>
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <div class="emergency-bar" role="region" aria-label="Emergency information">
+        <span>🚨 In an emergency, dial <a href="tel:112" class="eb-dial">112</a></span>
+        <span class="eb-links">
+            <a href="helplines.html">Helplines</a>
+            <a href="report.html" class="eb-cta">Request Help</a>
+        </span>
+    </div>
+
+    <header>
+        <a href="index.html" class="logo">Cyclo<span>Track</span> India</a>
+        <div class="header-right">
+            <nav class="main-nav" aria-label="Primary">
+                <a href="index.html">Home</a>
+                <a href="cyclone_region.html">Live Tracking</a>
+                <a href="response-center.html">Response Center</a>
+                <a href="cyclone_region.html#evolution">Prediction</a>
+                <a href="report.html">Report / Request Help</a>
+                <a href="helplines.html">Helplines</a>
+                <a href="about.html">About</a>
+            </nav>
+            <a href="tel:112" class="header-cta">Call 112</a>
+            <button class="hamburger" id="hamburgerBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+        </div>
+    </header>
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html">Home</a>
+        <a href="cyclone_region.html">Live Tracking</a>
+        <a href="cyclone_region.html#evolution">Prediction</a>
+        <a href="report.html">Report / Request Help</a>
+        <a href="helplines.html">Helplines</a>
+        <a href="about.html">About</a>
+    </div>
+
+    <div class="page-hero">
+        <div class="page-hero-inner">
+            <p class="breadcrumb">Home <span>/</span> DMCA / Copyright Policy</p>
+            <h1 class="page-hero-h1">DMCA & <em>Copyright</em></h1>
+            <p class="page-hero-sub">How to report copyright infringement, and what we allow through our file-upload fields.</p>
+        </div>
+    </div>
+
+    <section class="form-page-bg" id="main">
+        <div class="section-inner legal">
+            <p class="legal-meta">Last updated: 21 September 2026</p>
+
+            <h2>1. What can be uploaded on this Site</h2>
+            <p>Two forms accept a file: the <a href="report.html">emergency help-request form</a> and the <a href="missing-person.html">missing-person report form</a>. Both are restricted to a single optional photo, enforced both in your browser and again on the server:</p>
+            <div class="legal-box">
+                <ul style="margin-bottom:0">
+                    <li><strong>Formats:</strong> <code>JPEG</code>, <code>PNG</code>, or <code>WEBP</code> only. SVG and other formats are rejected — an SVG can embed executable script, so we don't accept it even though it's technically an "image."</li>
+                    <li><strong>Size:</strong> 2MB maximum.</li>
+                    <li><strong>Purpose:</strong> a photo relevant to the emergency or missing-person report only — not a general file-sharing feature.</li>
+                </ul>
+            </div>
+            <p>There is no public gallery, feed, or search of uploaded photos — they're stored for authorised responders only (see <a href="responder.html">Responder Access</a>), which meaningfully limits (but doesn't eliminate) copyright and illegal-content exposure compared to a public posting feature.</p>
+
+            <h2>2. By uploading, you confirm</h2>
+            <ul>
+                <li>You own the photo, or have the right to submit it for this purpose.</li>
+                <li>It doesn't infringe anyone else's copyright, trademark, or other rights.</li>
+                <li>It's relevant to the report you're filing, and doesn't contain illegal content.</li>
+            </ul>
+
+            <h2>3. Reporting a copyright claim (DMCA-style takedown)</h2>
+            <p>If you believe content on this Site infringes your copyright, email <a href="mailto:dmca@cyclotrackindia.example">dmca@cyclotrackindia.example</a> with:</p>
+            <ul>
+                <li>Identification of the copyrighted work you claim is infringed.</li>
+                <li>The specific location of the material on this Site (a reference ID, page URL, or description).</li>
+                <li>Your contact information (name, address, phone, email).</li>
+                <li>A statement that you have a good-faith belief the use is unauthorised.</li>
+                <li>A statement, under penalty of perjury, that the above is accurate and that you're authorised to act on the copyright owner's behalf.</li>
+                <li>Your physical or electronic signature.</li>
+            </ul>
+            <p>We'll review valid notices and remove or disable access to the identified material. <em>(Placeholder contact — the team should replace this with a real monitored address, and consult a lawyer before relying on this as a formal DMCA safe-harbor policy.)</em></p>
+
+            <h2>4. Counter-notice</h2>
+            <p>If your content was removed and you believe that was a mistake, contact the same address with the material's location, your contact details, and a statement under penalty of perjury that you have a good-faith belief the material was removed in error.</p>
+
+            <h2>5. Reporting other illegal or abusive content</h2>
+            <p>For anything else — illegal content that isn't a copyright claim — use the same contact address, or call <strong>112</strong> if it describes an ongoing emergency.</p>
+
+            <h2 id="hosting">6. Related technical safeguards</h2>
+            <p>Beyond file-type/size restrictions, the backend rate-limits form submissions and the AI chat endpoint per visitor to reduce automated abuse. See <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a> for the fuller picture.</p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-inner">
+            <div>
+                <div class="footer-logo">Cyclo<span>Track</span> India</div>
+                <p class="footer-copy">&copy; 2026 Team Nexus — Smart India Hackathon. All Rights Reserved.</p>
+            </div>
+            <nav class="footer-nav" aria-label="Footer">
+                <a href="index.html">Home</a>
+                <a href="cyclone_region.html">Live Tracking</a>
+                <a href="history.html">History</a>
+                <a href="response-center.html">Response Center</a>
+                <a href="report.html">Request Help</a>
+                <a href="helplines.html">Helplines</a>
+                <a href="about.html">About</a>
+            </nav>
+            <nav class="footer-legal" aria-label="Legal">
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
+                <a href="dmca.html" class="active">DMCA / Copyright</a>
+                <a href="responder.html">Responder Access</a>
+            </nav>
+        </div>
+    </footer>
+
+    <script>
+        (function () {
+            var btn = document.getElementById('hamburgerBtn');
+            var menu = document.getElementById('mobileMenu');
+            if (!btn || !menu) return;
+            btn.addEventListener('click', function () {
+                var open = menu.classList.toggle('open');
+                btn.classList.toggle('open');
+                btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            });
+            menu.querySelectorAll('a').forEach(function (a) {
+                a.addEventListener('click', function () {
+                    btn.classList.remove('open');
+                    menu.classList.remove('open');
+                    btn.setAttribute('aria-expanded', 'false');
+                });
+            });
+        })();
+    </script>
+    <script src="assets/chatbot.js" defer></script>
+</body>
+</html>

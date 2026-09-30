@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responder Access — CycloTrack India</title>
+    <meta name="description" content="Token-gated view of submitted emergency help requests and missing-person reports, for authorised responders only.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/chatbot.css">
+    <link rel="stylesheet" href="assets/emergency.css">
+    <link rel="stylesheet" href="assets/fx.css">
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --navy: #0B1E3A; --navy-dark: #070F1E; --orange: #F47B20; --orange-dark: #D9660E;
+            --white: #FFFFFF; --off-white: #F4F6F8; --text-body: #2D3E50;
+            --font-head: 'Instrument Sans', sans-serif; --font-body: 'Instrument Sans', sans-serif;
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--font-body); color: var(--text-body); background: var(--white); line-height: 1.6; font-size: 16px; }
+        header { background: var(--navy-dark); padding: 0 5%; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; border-bottom: 2px solid var(--orange); }
+        .logo { font-family: var(--font-head); font-weight: 800; font-size: 22px; color: var(--white); letter-spacing: .5px; text-decoration: none; }
+        .logo span { color: var(--orange); }
+        nav { display: flex; gap: 22px; align-items: center; }
+        nav a { font-family: var(--font-head); font-size: 15px; font-weight: 600; letter-spacing: .5px; color: rgba(255,255,255,.72); text-decoration: none; text-transform: uppercase; position: relative; padding: 6px 2px 8px; white-space: nowrap; transition: color .25s ease; }
+        nav a::after { content: ''; position: absolute; left: 50%; right: 50%; bottom: 0; height: 2px; background: var(--orange); transition: left .25s ease, right .25s ease; }
+        nav a:hover, nav a.active { color: var(--orange); }
+        nav a:hover::after, nav a.active::after { left: 0; right: 0; }
+        .header-cta { background: var(--orange); color: var(--white); font-family: var(--font-head); font-weight: 700; font-size: 14px; letter-spacing: .8px; text-transform: uppercase; padding: 9px 20px; text-decoration: none; }
+        .header-cta:hover { background: var(--orange-dark); }
+        .header-right { display: flex; align-items: center; gap: 18px; }
+        @media (min-width: 1025px) and (max-width: 1180px) { nav.main-nav { gap: 15px; } nav.main-nav a { font-size: 14px; } }
+        section { padding: 48px 5% 80px; }
+        .section-inner { max-width: 1000px; margin: 0 auto; }
+        .page-hero { background: var(--navy-dark); padding: 46px 5%; position: relative; overflow: hidden; }
+        .page-hero::before { content: ''; position: absolute; top: 0; right: 0; width: 40%; height: 100%; background: linear-gradient(120deg, transparent, rgba(244,123,32,.14)); }
+        .page-hero-inner { position: relative; z-index: 2; max-width: 1000px; margin: 0 auto; }
+        .breadcrumb { font-family: var(--font-head); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.45); margin-bottom: 10px; }
+        .page-hero-h1 { font-family: var(--font-head); font-weight: 800; font-size: clamp(30px, 4.6vw, 46px); color: var(--white); text-transform: uppercase; line-height: .98; margin-bottom: 10px; }
+        .page-hero-h1 em { color: var(--orange); font-style: normal; }
+        .page-hero-sub { font-size: 14.5px; color: rgba(255,255,255,.55); max-width: 640px; }
+        .form-page-bg { background: var(--off-white); min-height: 50vh; }
+        .hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 32px; height: 32px; background: transparent; border: none; cursor: pointer; padding: 0; }
+        .hamburger span { display: block; width: 22px; height: 2px; background: var(--white); transition: .2s; }
+        .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+        .mobile-menu { position: fixed; top: 64px; left: 0; right: 0; background: var(--navy-dark); border-bottom: 2px solid var(--orange); z-index: 99; max-height: 0; overflow: hidden; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: max-height .32s ease, opacity .28s ease, transform .28s ease, visibility .28s; }
+        .mobile-menu.open { max-height: 560px; opacity: 1; visibility: visible; transform: translateY(0); }
+        .mobile-menu a { font-family: var(--font-head); font-size: 16px; font-weight: 600; letter-spacing: .5px; color: rgba(255,255,255,.78); text-decoration: none; text-transform: uppercase; padding: 16px 5%; border-bottom: 1px solid rgba(255,255,255,.08); display: block; }
+        .mobile-menu a.active { color: var(--orange); }
+        @media (max-width: 1024px) { nav.main-nav { display: none; } .header-cta { display: none; } .hamburger { display: flex; } }
+        @media (min-width: 1025px) { nav.main-nav { display: flex; } .hamburger { display: none; } .mobile-menu { display: none; } }
+        footer { background: var(--navy-dark); padding: 36px 5%; border-top: 2px solid var(--orange); }
+        .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        .footer-logo { font-family: var(--font-head); font-size: 19px; font-weight: 800; color: var(--white); }
+        .footer-logo span { color: var(--orange); }
+        .footer-copy { font-size: 12px; color: rgba(255,255,255,.3); }
+        .footer-nav { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+        .footer-nav a { color: rgba(255,255,255,.6); text-decoration: none; font-size: 13px; text-transform: uppercase; font-family: var(--font-head); letter-spacing: .5px; }
+        .footer-nav a:hover { color: var(--orange); }
+
+        /* ---- Responder portal ---- */
+        .rp-gate { max-width: 480px; margin: 0 auto; background: var(--white); border: 1px solid #E3E9EE; border-radius: 10px; padding: 28px; box-shadow: 0 4px 18px rgba(11,30,58,.06); }
+        .rp-gate label { display: block; font-family: var(--font-head); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: #6B7E8E; margin-bottom: 8px; }
+        .rp-gate input { width: 100%; padding: 12px 14px; border: 1px solid #D5DEE5; border-radius: 6px; font-size: 15px; margin-bottom: 14px; font-family: var(--font-mono, monospace); }
+        .rp-gate input:focus { outline: 2px solid var(--orange); outline-offset: 1px; border-color: var(--orange); }
+        .rp-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--orange); color: var(--white); border: none; font-family: var(--font-head); font-weight: 700; font-size: 13.5px; letter-spacing: .6px; text-transform: uppercase; padding: 11px 22px; border-radius: 6px; cursor: pointer; transition: background .18s ease, transform .16s ease; }
+        .rp-btn:hover { background: var(--orange-dark); }
+        .rp-btn:active { transform: scale(.97); }
+        .rp-btn.ghost { background: transparent; color: var(--navy); border: 1px solid #D5DEE5; }
+        .rp-msg { margin-top: 14px; font-size: 13.5px; padding: 10px 12px; border-radius: 6px; display: none; }
+        .rp-msg.show { display: block; }
+        .rp-msg.error { background: #FDECEC; color: #7A1620; }
+        .rp-msg.warn { background: #FFF4E9; color: #6B4A1E; }
+        .rp-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 22px; }
+        .rp-toolbar h2 { font-family: var(--font-head); font-size: 15px; text-transform: uppercase; letter-spacing: .6px; color: var(--navy); }
+        .rp-panel { background: var(--white); border: 1px solid #E3E9EE; border-radius: 10px; padding: 22px; margin-bottom: 24px; }
+        .rp-panel-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; }
+        .rp-panel-head h3 { font-family: var(--font-head); font-size: 17px; color: var(--navy); }
+        .rp-count { font-family: var(--font-mono, monospace); font-size: 12px; color: #8FA1B0; }
+        .rp-card { border: 1px solid #E9EEF2; border-radius: 8px; padding: 14px 16px; margin-bottom: 10px; }
+        .rp-card:last-child { margin-bottom: 0; }
+        .rp-card-head { display: flex; justify-content: space-between; gap: 10px; font-family: var(--font-mono, monospace); font-size: 11.5px; color: #6B7E8E; margin-bottom: 8px; }
+        .rp-card-head b { color: var(--orange-dark); }
+        .rp-field { font-size: 13.5px; margin-bottom: 3px; }
+        .rp-field b { color: var(--navy); font-weight: 600; }
+        .rp-empty { color: #8FA1B0; font-size: 14px; padding: 20px 0; text-align: center; }
+        .rp-photo { max-width: 160px; border-radius: 6px; margin-top: 8px; display: block; }
+        [hidden] { display: none !important; }
+    </style>
+    <link rel="stylesheet" href="assets/theme.css">
+</head>
+<body id="top">
+<script src="assets/fx.js"></script>
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <div class="emergency-bar" role="region" aria-label="Emergency information">
+        <span>🚨 In an emergency, dial <a href="tel:112" class="eb-dial">112</a></span>
+        <span class="eb-links">
+            <a href="helplines.html">Helplines</a>
+            <a href="report.html" class="eb-cta">Request Help</a>
+        </span>
+    </div>
+
+    <header>
+        <a href="index.html" class="logo">Cyclo<span>Track</span> India</a>
+        <div class="header-right">
+            <nav class="main-nav" aria-label="Primary">
+                <a href="index.html">Home</a>
+                <a href="cyclone_region.html">Live Tracking</a>
+                <a href="response-center.html">Response Center</a>
+                <a href="cyclone_region.html#evolution">Prediction</a>
+                <a href="report.html">Report / Request Help</a>
+                <a href="helplines.html">Helplines</a>
+                <a href="about.html">About</a>
+            </nav>
+            <a href="tel:112" class="header-cta">Call 112</a>
+            <button class="hamburger" id="hamburgerBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+        </div>
+    </header>
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html">Home</a>
+        <a href="cyclone_region.html">Live Tracking</a>
+        <a href="cyclone_region.html#evolution">Prediction</a>
+        <a href="report.html">Report / Request Help</a>
+        <a href="helplines.html">Helplines</a>
+        <a href="about.html">About</a>
+    </div>
+
+    <div class="page-hero">
+        <div class="page-hero-inner">
+            <p class="breadcrumb">Home <span>/</span> Responder Access</p>
+            <h1 class="page-hero-h1">Responder <em>Access</em></h1>
+            <p class="page-hero-sub">A private view of submitted emergency help requests and missing-person reports, for authorised responders only. Not indexed, not public.</p>
+        </div>
+    </div>
+
+    <section class="form-page-bg" id="main">
+        <div class="section-inner">
+
+            <div class="rp-gate" id="rpGate">
+                <label for="rpToken">Responder access token</label>
+                <input id="rpToken" type="password" autocomplete="off" placeholder="Paste your X-Responder-Token">
+                <button class="rp-btn" id="rpUnlock">Unlock</button>
+                <div class="rp-msg" id="rpGateMsg"></div>
+                <p style="margin-top:16px;font-size:12.5px;color:#8FA1B0;">This token is set by the team as <code>RESPONDER_ACCESS_TOKEN</code> in the backend's environment. It's kept only in this browser tab's session storage — it is never sent anywhere except as a request header to this Site's own backend.</p>
+            </div>
+
+            <div id="rpApp" hidden>
+                <div class="rp-toolbar">
+                    <h2>Signed in as responder</h2>
+                    <div>
+                        <button class="rp-btn ghost" id="rpRefresh">↻ Refresh</button>
+                        <button class="rp-btn ghost" id="rpLock">Lock</button>
+                    </div>
+                </div>
+
+                <div class="rp-panel">
+                    <div class="rp-panel-head">
+                        <h3>🆘 Emergency Help Requests</h3>
+                        <span class="rp-count" id="hrCount"></span>
+                    </div>
+                    <div id="hrList"><p class="rp-empty">Loading…</p></div>
+                </div>
+
+                <div class="rp-panel">
+                    <div class="rp-panel-head">
+                        <h3>👤 Missing Person Reports</h3>
+                        <span class="rp-count" id="mpCount"></span>
+                    </div>
+                    <div id="mpList"><p class="rp-empty">Loading…</p></div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-inner">
+            <div>
+                <div class="footer-logo">Cyclo<span>Track</span> India</div>
+                <p class="footer-copy">&copy; 2026 Team Nexus — Smart India Hackathon. All Rights Reserved.</p>
+            </div>
+            <nav class="footer-nav" aria-label="Footer">
+                <a href="index.html">Home</a>
+                <a href="cyclone_region.html">Live Tracking</a>
+                <a href="history.html">History</a>
+                <a href="response-center.html">Response Center</a>
+                <a href="report.html">Request Help</a>
+                <a href="helplines.html">Helplines</a>
+                <a href="about.html">About</a>
+            </nav>
+            <nav class="footer-legal" aria-label="Legal">
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
+                <a href="dmca.html">DMCA / Copyright</a>
+                <a href="responder.html" class="active">Responder Access</a>
+            </nav>
+        </div>
+    </footer>
+
+    <script>
+        (function () {
+            var btn = document.getElementById('hamburgerBtn');
+            var menu = document.getElementById('mobileMenu');
+            if (!btn || !menu) return;
+            btn.addEventListener('click', function () {
+                var open = menu.classList.toggle('open');
+                btn.classList.toggle('open');
+                btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            });
+            menu.querySelectorAll('a').forEach(function (a) {
+                a.addEventListener('click', function () {
+                    btn.classList.remove('open');
+                    menu.classList.remove('open');
+                    btn.setAttribute('aria-expanded', 'false');
+                });
+            });
+        })();
+    </script>
+
+    <script>
+    (function () {
+        "use strict";
+        var API_BASE = (window.CYCLOTRACK_API_BASE || "http://localhost:8000").replace(/\/+$/, "");
+        var TOKEN_KEY = "cyclotrack_responder_token";
+
+        var gate = document.getElementById("rpGate");
+        var app = document.getElementById("rpApp");
+        var tokenInput = document.getElementById("rpToken");
+        var gateMsg = document.getElementById("rpGateMsg");
+
+        function esc(s) {
+            return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+                return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+            });
+        }
+        function showGateMsg(type, text) {
+            gateMsg.className = "rp-msg show " + type;
+            gateMsg.textContent = text;
+        }
+
+        async function apiGet(path, token) {
+            var res = await fetch(API_BASE + path, { headers: { "X-Responder-Token": token } });
+            if (res.status === 503) throw new Error("Responder access isn't configured on this server yet (RESPONDER_ACCESS_TOKEN is unset).");
+            if (res.status === 401) throw new Error("That token was rejected.");
+            if (!res.ok) throw new Error("Server returned " + res.status);
+            return res.json();
+        }
+
+        function renderHelpRequests(records) {
+            var box = document.getElementById("hrList");
+            document.getElementById("hrCount").textContent = records.length + " total";
+            if (!records.length) { box.innerHTML = '<p class="rp-empty">No emergency requests yet.</p>'; return; }
+            box.innerHTML = records.map(function (r) {
+                var types = Array.isArray(r.emergency_types) ? r.emergency_types.join(", ") : "";
+                return '<div class="rp-card">' +
+                    '<div class="rp-card-head"><span><b>' + esc(r.id) + '</b> · ' + esc(r.created_at) + '</span><span>' + esc(types) + '</span></div>' +
+                    '<div class="rp-field"><b>' + esc(r.full_name) + '</b> · ' + esc(r.mobile) + (r.email ? ' · ' + esc(r.email) : '') + '</div>' +
+                    '<div class="rp-field">' + esc(r.village_city) + ', ' + esc(r.district) + ', ' + esc(r.state) + '</div>' +
+                    '<div class="rp-field">Current location: ' + esc(r.current_location) + '</div>' +
+                    '<div class="rp-field">People affected: ' + esc(r.people_affected) + ' (children: ' + esc(r.children || 0) + ', elderly/disabled: ' + esc(r.elderly_disabled || 0) + ')</div>' +
+                    '<div class="rp-field">' + esc(r.description) + '</div>' +
+                    (r.image ? '<img class="rp-photo" src="' + r.image + '" alt="Submitted photo">' : '') +
+                    '</div>';
+            }).join("");
+        }
+
+        function renderMissingPersons(records) {
+            var box = document.getElementById("mpList");
+            document.getElementById("mpCount").textContent = records.length + " total";
+            if (!records.length) { box.innerHTML = '<p class="rp-empty">No missing-person reports yet.</p>'; return; }
+            box.innerHTML = records.map(function (r) {
+                return '<div class="rp-card">' +
+                    '<div class="rp-card-head"><span><b>' + esc(r.id) + '</b> · ' + esc(r.created_at) + '</span><span>' + esc(r.status) + '</span></div>' +
+                    '<div class="rp-field"><b>' + esc(r.name) + '</b>, age ' + esc(r.age) + (r.gender ? ' · ' + esc(r.gender) : '') + '</div>' +
+                    '<div class="rp-field">Last seen: ' + esc(r.last_seen) + ' at ' + esc(r.location) + '</div>' +
+                    '<div class="rp-field">' + esc(r.details) + '</div>' +
+                    '<div class="rp-field">Contact: ' + esc(r.contact_name) + ' · ' + esc(r.contact_phone) + '</div>' +
+                    (r.photo ? '<img class="rp-photo" src="' + r.photo + '" alt="Missing person photo">' : '') +
+                    '</div>';
+            }).join("");
+        }
+
+        async function loadAll(token) {
+            document.getElementById("hrList").innerHTML = '<p class="rp-empty">Loading…</p>';
+            document.getElementById("mpList").innerHTML = '<p class="rp-empty">Loading…</p>';
+            if (typeof CycloLoader !== "undefined") CycloLoader.show("Loading responder inbox…");
+            try {
+                var hr = await apiGet("/api/help-requests/inbox", token);
+                renderHelpRequests(hr.requests || []);
+                var mp = await apiGet("/api/v1/missing-persons", token);
+                renderMissingPersons(mp.reports || []);
+            } catch (err) {
+                document.getElementById("hrList").innerHTML = '<p class="rp-empty">' + esc(err.message) + '</p>';
+                document.getElementById("mpList").innerHTML = '<p class="rp-empty">' + esc(err.message) + '</p>';
+            } finally {
+                if (typeof CycloLoader !== "undefined") CycloLoader.hide();
+            }
+        }
+
+        function unlock() {
+            var token = tokenInput.value.trim();
+            if (!token) { showGateMsg("error", "Enter your responder access token."); return; }
+            gate.hidden = true;
+            app.hidden = false;
+            try { sessionStorage.setItem(TOKEN_KEY, token); } catch (e) {}
+            loadAll(token).catch(function () {});
+        }
+
+        function lock() {
+            try { sessionStorage.removeItem(TOKEN_KEY); } catch (e) {}
+            tokenInput.value = "";
+            app.hidden = true;
+            gate.hidden = false;
+        }
+
+        document.getElementById("rpUnlock").addEventListener("click", unlock);
+        tokenInput.addEventListener("keydown", function (e) { if (e.key === "Enter") unlock(); });
+        document.getElementById("rpLock").addEventListener("click", lock);
+        document.getElementById("rpRefresh").addEventListener("click", function () {
+            var t = sessionStorage.getItem(TOKEN_KEY);
+            if (t) loadAll(t);
+        });
+
+        try {
+            var saved = sessionStorage.getItem(TOKEN_KEY);
+            if (saved) {
+                tokenInput.value = saved;
+                gate.hidden = true;
+                app.hidden = false;
+                loadAll(saved);
+            }
+        } catch (e) {}
+    })();
+    </script>
+    <script src="assets/chatbot.js" defer></script>
+</body>
+</html>
